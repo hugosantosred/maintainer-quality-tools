@@ -193,12 +193,13 @@ def setup_server(db, odoo_unittest, tested_addons, server_path,
         preinstall_modules = ['base']
     print("\nCreating instance:")
     try:
-        subprocess.check_call(["createdb", db])
+        subprocess.check_call(["createdb", "-h 127.0.0.1", db])
     except subprocess.CalledProcessError:
         print("Using previous openerp_template database.")
     else:
         cmd_odoo = ["%s/openerp-server" % server_path,
                     "-d", db,
+                    "--db_host", "127.0.0.1",
                     "--log-level=warn",
                     "--stop-after-init",
                     "--addons-path", addons_path,
@@ -273,6 +274,7 @@ def main(argv=None):
 
     cmd_odoo_test = ["coverage", "run",
                      "%s/openerp-server" % server_path,
+                     "--db_host", "127.0.0.1",
                      "-d", database,
                      "--stop-after-init",
                      "--log-level", test_loglevel,
@@ -287,6 +289,7 @@ def main(argv=None):
         to_test_list = tested_addons_list
         cmd_odoo_install = ["%s/openerp-server" % server_path,
                             "-d", database,
+                            "--db_host", "127.0.0.1",
                             "--stop-after-init",
                             "--log-level=warn",
                             "--addons-path", addons_path,
@@ -305,7 +308,7 @@ def main(argv=None):
         db_odoo_created = False
         try:
             db_odoo_created = subprocess.call(
-                ["createdb", "-T", dbtemplate, database])
+                ["createdb", "-h", "127.0.0.1", "-T", dbtemplate, database])
         except subprocess.CalledProcessError:
             db_odoo_created = True
         for command, check_loaded in commands:
@@ -351,7 +354,7 @@ def main(argv=None):
                 print(fail_msg, "Found %d lines with errors" % errors)
         if not instance_alive:
             # Don't drop the database if will be used later.
-            subprocess.call(["dropdb", database])
+            subprocess.call(["dropdb", "-h", "127.0.0.1", database])
 
     print('Module test summary')
     for to_test in to_test_list:
