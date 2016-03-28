@@ -197,7 +197,8 @@ def setup_server(db, odoo_unittest, tested_addons, server_path,
         preinstall_modules = ['base']
     print("\nCreating instance:")
     try:
-        subprocess.check_call(["createdb", "-h 127.0.0.1", db])
+        subprocess.check_call([
+            "createdb", "-h", "postgres", "-u", "openerp", db])
     except subprocess.CalledProcessError:
         print("Using previous openerp_template database.")
     else:
@@ -364,7 +365,8 @@ def main(argv=None):
         db_odoo_created = False
         try:
             db_odoo_created = subprocess.call(
-                ["createdb", "-h", "postgres", "-T", dbtemplate, database])
+                ["createdb", "-h", "postgres", "-u", "openerp",
+                 "-T", dbtemplate, database])
             copy_attachments(dbtemplate, database, data_dir)
         except subprocess.CalledProcessError:
             db_odoo_created = True
@@ -411,7 +413,8 @@ def main(argv=None):
                 print(fail_msg, "Found %d lines with errors" % errors)
         if not instance_alive:
             # Don't drop the database if will be used later.
-            subprocess.call(["dropdb", "-h", "127.0.0.1", database])
+            subprocess.call([
+                "dropdb", "-h", "postgres", "-u", "openerp", database])
 
     print('Module test summary')
     for to_test in to_test_list:
