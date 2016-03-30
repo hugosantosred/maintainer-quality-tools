@@ -1,3 +1,4 @@
 #!/bin/bash
 echo ${VIRTUAL_ENV}
+export PATH=/root/maintainer-quality-tools/travis:${PATH}
 /root/venv/bin/python /root/maintainer-quality-tools/travis/travis_run_tests
