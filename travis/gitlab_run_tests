@@ -2,4 +2,5 @@
 echo ${VIRTUAL_ENV}
 export PATH=/root/maintainer-quality-tools/travis:/root/venv/bin:${PATH}
 echo ${PATH}
-/root/maintainer-quality-tools/travis/travis_run_tests
+export TESTS=1 ODOO_REPO="OCA/OCB"
+/root/venv/bin/python /root/maintainer-quality-tools/travis/travis_run_tests
